@@ -1,7 +1,7 @@
 import pygame
 
 from .entity import Entity
-from .constants import SHOOT_EVENT
+from .constants import SHOOT_EVENT, DISPLAY_SIZE
 
 
 class Player(Entity):
@@ -30,3 +30,8 @@ class Player(Entity):
         just_pressed_keys = pygame.key.get_just_pressed()
         if just_pressed_keys[pygame.K_SPACE]:
             pygame.event.post(pygame.Event(SHOOT_EVENT))
+
+            if self.rect.left < 0:
+                self.rect.left = 0
+            if self.rect.right > DISPLAY_SIZE[0]:
+                self.rect.right = DISPLAY_SIZE[0]
