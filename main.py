@@ -13,10 +13,10 @@ from src.utils import load_image, get_path
 def game(display: pygame.Surface, clock: pygame.time.Clock) -> None:
     asteroid_image = load_image("assets", "images", "asteroid.png", size=[164, 164])
     background_image = load_image("assets", "images", "background.png", size=DISPLAY_SIZE)
-    player_image = load_image("assets", "images", "player.png", size=[96, 96])
+    player_image = load_image("assets", "images", "player.png", size=[128, 128])
     shot_image = load_image("assets", "images", "shot.png", size=[64, 64])
 
-    coords = DISPLAY_SIZE[0] /2, DISPLAY_SIZE[1] -50
+    coords = DISPLAY_SIZE[0] /2, DISPLAY_SIZE[1] -80
     player = Player(player_image, coords, 6, 100)
 
     bullets = list()
@@ -42,12 +42,16 @@ def game(display: pygame.Surface, clock: pygame.time.Clock) -> None:
             elif event.type == SHOOT_EVENT:
                 if pygame.mixer.get_init():
                     shot_sound.play()
-                b = Bullet(shot_image, player.rect.midtop, 10)
-                bullets.append(b)
+                if score < 10:
+                    b = Bullet(shot_image, player.rect.midtop, 10)
+                    bullets.append(b)
+                else:
+                    b = Bullet(shot_image, player.rect.midtop, 10)
+                    bullets.append(b)
             elif event.type == SPAWN_EVENT:
                 millis = max(750, round(2000 - difficulty / 70)) 
                 pygame.time.set_timer(SPAWN_EVENT, millis, 1)
-                new_image = pygame.transform.rotozoom(asteroid_image, randint(0, 360), 1 + randint(-50, 50) / 100)
+                new_image = pygame.transform.rotozoom(asteroid_image, randint(0, 360), 1 + randint(-75, 75) / 100)
 
                 coords = [randint(50, DISPLAY_SIZE[0] - 50), -new_image.height]
                 speed = 5 + difficulty / 35_000
