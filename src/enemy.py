@@ -1,8 +1,10 @@
 import pygame
 from typing import Iterable
 
+from time import time
+
 from .entity import Entity
-from .constants import DISPLAY_SIZE
+from .constants import DISPLAY_SIZE, ENEMY_SHOOT_EVENT
 
 
 class Enemy(Entity):
@@ -14,3 +16,15 @@ class Enemy(Entity):
         self.move(0, self.speed)
         if self.rect.top >= DISPLAY_SIZE[1]:
             self.kill()
+class ShootEnemy(Enemy):
+    def __init__(self, damage: float, image, coords, speed, shoot_interval):
+        super().__init__(image, coords, speed, damage)
+        self.shoot_interval = shoot_interval
+        self.shoot_timer = time()
+    
+    def update(self):
+        super().update()
+
+        if time() - self.shoot_timer >= self.shoot_interval:
+            self.shoot_timer += self.shoot_interval
+            pygame.event.post(ENEMY_SHOOT_EVENT, coords=self.rect.midbottom, damage=self.damage)
